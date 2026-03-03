@@ -14,9 +14,9 @@ namespace Payroll.API.Data
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(builder);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
@@ -36,7 +36,21 @@ namespace Payroll.API.Data
                 }
             };
 
-            modelBuilder.Entity<IdentityRole>().HasData(roles);
+            builder.Entity<IdentityRole>().HasData(roles);
+
+            builder.Entity<Department>()
+                .HasIndex(d => d.Name)
+                .IsUnique();
+
+            builder.Entity<Employee>()
+            .HasIndex(e => e.EmployeeNumber)
+            .IsUnique();
+
+            builder.Entity<Employee>()
+                .HasOne(e => e.Department)
+                .WithMany(d => d.Employees)
+                .HasForeignKey(e => e.DepartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
