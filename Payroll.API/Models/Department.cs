@@ -10,7 +10,7 @@ namespace Payroll.API.Models
         [MaxLength(100)]
         public string Name { get; private set; } = string.Empty;
 
-        public ICollection<Employee> Employees { get; private set; } = new List<Employee>();
+        public List<Employee> Employees { get; private set; } = new List<Employee>();
 
         private Department() { } // For EF Core
 
@@ -21,6 +21,14 @@ namespace Payroll.API.Models
 
             Id = Guid.NewGuid();
             Name = name.Trim().ToUpper();
+        }
+
+        public void Rename(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                throw new ArgumentException("Invalid name");
+
+            Name = newName;
         }
     }
 }
