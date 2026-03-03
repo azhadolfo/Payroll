@@ -1,0 +1,44 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Payroll.API.Data;
+using Payroll.API.Interfaces;
+using Payroll.API.Models;
+
+namespace Payroll.API.Repository
+{
+    public class DepartmentRepository : IDepartmentRepository
+    {
+        private readonly ApplicationDbContext _dbContext;
+
+        public DepartmentRepository(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        public async Task<Department> AddAsync(Department department, CancellationToken cancellationToken = default)
+        {
+            await _dbContext.Departments.AddAsync(department, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return department;
+        }
+
+        public void DeleteAsync(Department department)
+        {
+            _dbContext.Departments.Remove(department);
+        }
+
+        public async Task<List<Department>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Departments.ToListAsync(cancellationToken);
+        }
+
+        public async Task<Department?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Departments.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public void UpdateAsync(Department department)
+        {
+            _dbContext.Departments.Update(department);
+        }
+    }
+}
