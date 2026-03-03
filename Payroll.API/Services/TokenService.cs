@@ -1,10 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using StockApi.Api.Models;
+using Payroll.API.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace StockApi.Api.Services
+namespace Payroll.API.Services
 {
     public class TokenService : ITokenService
     {

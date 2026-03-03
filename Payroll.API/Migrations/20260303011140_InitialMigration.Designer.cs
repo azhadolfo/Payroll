@@ -7,13 +7,12 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Payroll.API.Data;
 
-
 #nullable disable
 
-namespace StockApi.Api.Migrations
+namespace Payroll.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260214032501_InitialMigration")]
+    [Migration("20260303011140_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -55,6 +54,22 @@ namespace StockApi.Api.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "18588f65-97f3-4a41-b73f-3d5a6c7fa0d0",
+                            ConcurrencyStamp = "bbe16d99-2a17-463e-be2c-2d41769a5131",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "b99c2763-8b22-4cbe-b3d7-88aa10190f86",
+                            ConcurrencyStamp = "554bcbf6-be81-4aa2-b174-adfdad43e9e5",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -190,7 +205,7 @@ namespace StockApi.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("StockApi.Api.Models.ApplicationUser", b =>
+            modelBuilder.Entity("Payroll.API.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text")
@@ -270,7 +285,7 @@ namespace StockApi.Api.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("StockApi.Api.Models.Comment", b =>
+            modelBuilder.Entity("Payroll.API.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -306,7 +321,7 @@ namespace StockApi.Api.Migrations
                     b.ToTable("comments", (string)null);
                 });
 
-            modelBuilder.Entity("StockApi.Api.Models.Stock", b =>
+            modelBuilder.Entity("Payroll.API.Models.Stock", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -360,7 +375,7 @@ namespace StockApi.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("StockApi.Api.Models.ApplicationUser", null)
+                    b.HasOne("Payroll.API.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,7 +385,7 @@ namespace StockApi.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("StockApi.Api.Models.ApplicationUser", null)
+                    b.HasOne("Payroll.API.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -387,7 +402,7 @@ namespace StockApi.Api.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_asp_net_user_roles_asp_net_roles_role_id");
 
-                    b.HasOne("StockApi.Api.Models.ApplicationUser", null)
+                    b.HasOne("Payroll.API.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -397,7 +412,7 @@ namespace StockApi.Api.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("StockApi.Api.Models.ApplicationUser", null)
+                    b.HasOne("Payroll.API.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,9 +420,9 @@ namespace StockApi.Api.Migrations
                         .HasConstraintName("fk_asp_net_user_tokens_asp_net_users_user_id");
                 });
 
-            modelBuilder.Entity("StockApi.Api.Models.Comment", b =>
+            modelBuilder.Entity("Payroll.API.Models.Comment", b =>
                 {
-                    b.HasOne("StockApi.Api.Models.Stock", "Stock")
+                    b.HasOne("Payroll.API.Models.Stock", "Stock")
                         .WithMany("Comments")
                         .HasForeignKey("StockId")
                         .HasConstraintName("fk_comments_stocks_stock_id");
@@ -415,7 +430,7 @@ namespace StockApi.Api.Migrations
                     b.Navigation("Stock");
                 });
 
-            modelBuilder.Entity("StockApi.Api.Models.Stock", b =>
+            modelBuilder.Entity("Payroll.API.Models.Stock", b =>
                 {
                     b.Navigation("Comments");
                 });

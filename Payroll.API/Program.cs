@@ -22,7 +22,7 @@ builder.Services.AddOpenApi(options =>
     {
         document.Info = new()
         {
-            Title = "Stock API",
+            Title = "Payroll API",
             Version = "v1"
         };
 
@@ -116,7 +116,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference(options =>
     {
-        options.Title = "Stock API";
+        options.Title = "Payroll API";
         options.DarkMode = true;
         options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
     });
