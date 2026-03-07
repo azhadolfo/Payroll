@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Payroll.API.Dtos.Department;
 using Payroll.API.Services;
 
@@ -6,6 +7,7 @@ namespace Payroll.API.Controllers
 {
     [ApiController]
     [Route("api/department")]
+    [Authorize]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;
