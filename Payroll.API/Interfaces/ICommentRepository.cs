@@ -10,8 +10,8 @@ namespace Payroll.API.Interfaces
 
         Task<Comment> AddAsync(Comment comment, CancellationToken cancellationToken = default);
 
-        Task<Comment?> UpdateAsync(Comment comment, CancellationToken cancellationToken = default);
+        Task<Comment?> UpdateAsync(int id, Comment comment, CancellationToken cancellationToken = default);
 
-        Task<Comment?> DeleteAsync(CancellationToken cancellationToken = default);
+        Task<Comment?> DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 }

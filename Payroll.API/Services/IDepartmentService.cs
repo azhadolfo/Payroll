@@ -1,13 +1,17 @@
-﻿using Payroll.API.Models;
+﻿using Payroll.API.Dtos.Department;
 
 namespace Payroll.API.Services
 {
     public interface IDepartmentService
     {
-        Task<List<Department>> GetAllAsync();
-        Task<Department?> GetByIdAsync(Guid id);
-        Task<Department> CreateAsync(string name);
-        Task<Department?> RenameAsync(Guid id, string newName);
-        Task<bool> DeleteAsync(Guid id);
+        Task<List<DepartmentDto>> GetAllAsync(CancellationToken cancellationToken = default);
+
+        Task<DepartmentDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+
+        Task<DepartmentDto> CreateAsync(CreateDepartmentDto createDepartmentDto, CancellationToken cancellationToken = default);
+
+        Task<DepartmentDto?> RenameAsync(Guid id, EditDepartmentDto editDepartmentDto, CancellationToken cancellationToken = default);
+
+        Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

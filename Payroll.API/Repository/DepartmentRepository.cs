@@ -14,14 +14,12 @@ namespace Payroll.API.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<Department> AddAsync(Department department, CancellationToken cancellationToken = default)
+        public async Task AddAsync(Department department, CancellationToken cancellationToken = default)
         {
             await _dbContext.Departments.AddAsync(department, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return department;
         }
 
-        public void DeleteAsync(Department department)
+        public void Delete(Department department)
         {
             _dbContext.Departments.Remove(department);
         }
@@ -36,7 +34,12 @@ namespace Payroll.API.Repository
             return await _dbContext.Departments.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
-        public void UpdateAsync(Department department)
+        public async Task SaveAsync(CancellationToken cancellationToken = default)
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public void Update(Department department)
         {
             _dbContext.Departments.Update(department);
         }
