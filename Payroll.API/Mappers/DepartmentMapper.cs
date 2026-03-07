@@ -5,17 +5,17 @@ namespace Payroll.API.Mappers
 {
     public static class DepartmentMapper
     {
-        public static DepartmentDto ToDto(this Department departmentModel)
+        public static DepartmentResponseDto ToDto(this Department departmentModel)
         {
-            return new DepartmentDto
+            return new DepartmentResponseDto
             {
                 Id = departmentModel.Id,
                 Name = departmentModel.Name,
-                //Employees = departmentModel.Employees.Select(e => e.ToEmployeeDto()).ToList()
+                Employees = departmentModel.Employees.ConvertAll(e => e.ToDto())
             };
         }
 
-        public static Department ToDepartmentFromCreateDTO(this CreateDepartmentDto departmentDto)
+        public static Department ToDepartmentFromCreateDTO(this DepartmentCreateDto departmentDto)
         {
             return new Department(departmentDto.Name);
         }

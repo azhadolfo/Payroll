@@ -26,12 +26,17 @@ namespace Payroll.API.Repository
 
         public async Task<List<Department>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Departments.ToListAsync(cancellationToken);
+            return await _dbContext.Departments.Include(d => d.Employees).ToListAsync(cancellationToken);
         }
 
         public async Task<Department?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Departments.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return await _dbContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task<bool> IsDepartmentExist(Guid departmentId, CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.Departments.AnyAsync(d => d.Id == departmentId, cancellationToken);
         }
 
         public async Task SaveAsync(CancellationToken cancellationToken = default)

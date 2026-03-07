@@ -13,7 +13,7 @@ namespace Payroll.API.Services
             _departmentRepository = departmentRepository;
         }
 
-        public async Task<DepartmentDto> CreateAsync(CreateDepartmentDto createDepartmentDto, CancellationToken cancellationToken = default)
+        public async Task<DepartmentResponseDto> CreateAsync(DepartmentCreateDto createDepartmentDto, CancellationToken cancellationToken = default)
         {
             var department = createDepartmentDto.ToDepartmentFromCreateDTO();
             await _departmentRepository.AddAsync(department, cancellationToken);
@@ -32,20 +32,20 @@ namespace Payroll.API.Services
             return true;
         }
 
-        public async Task<List<DepartmentDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<DepartmentResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var departments = await _departmentRepository.GetAllAsync(cancellationToken);
             return departments.Select(x => x.ToDto()).ToList();
         }
 
-        public async Task<DepartmentDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<DepartmentResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
             if (department == null) return null;
             return department.ToDto();
         }
 
-        public async Task<DepartmentDto?> RenameAsync(Guid id, EditDepartmentDto editDepartmentDto, CancellationToken cancellationToken = default)
+        public async Task<DepartmentResponseDto?> RenameAsync(Guid id, DepartmentEditDto editDepartmentDto, CancellationToken cancellationToken = default)
         {
             var department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
             if (department == null) return null;

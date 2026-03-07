@@ -15,5 +15,7 @@ namespace Payroll.API.Interfaces
         void Delete(Department department);
 
         Task SaveAsync(CancellationToken cancellationToken = default);
+
+        Task<bool> IsDepartmentExist(Guid departmentId, CancellationToken cancellationToken = default);
     }
 }

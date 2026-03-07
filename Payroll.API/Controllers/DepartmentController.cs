@@ -26,31 +26,58 @@ namespace Payroll.API.Controllers
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var department = await _departmentService.GetByIdAsync(id, cancellationToken);
-            if (department == null) return NotFound();
+
+            if (department == null)
+                return NotFound();
+
             return Ok(department);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateDepartmentDto createDepartmentDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create([FromBody] DepartmentCreateDto createDepartmentDto, CancellationToken cancellationToken)
         {
-            var department = await _departmentService.CreateAsync(createDepartmentDto, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { id = department.Id }, department);
+            try
+            {
+                var department = await _departmentService.CreateAsync(createDepartmentDto, cancellationToken);
+                return CreatedAtAction(nameof(GetById), new { id = department.Id }, department);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Rename(Guid id, [FromBody] EditDepartmentDto editDepartmentDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Rename(Guid id, [FromBody] DepartmentEditDto editDepartmentDto, CancellationToken cancellationToken)
         {
-            var department = await _departmentService.RenameAsync(id, editDepartmentDto, cancellationToken);
-            if (department == null) return NotFound();
-            return Ok(department);
+            try
+            {
+                var department = await _departmentService.RenameAsync(id, editDepartmentDto, cancellationToken);
+                if (department == null) return NotFound();
+                return Ok(department);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            var success = await _departmentService.DeleteAsync(id, cancellationToken);
-            if (!success) return NotFound();
-            return NoContent();
+            try
+            {
+                var success = await _departmentService.DeleteAsync(id, cancellationToken);
+
+                if (!success)
+                    return NotFound();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

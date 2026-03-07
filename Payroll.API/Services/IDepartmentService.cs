@@ -4,13 +4,13 @@ namespace Payroll.API.Services
 {
     public interface IDepartmentService
     {
-        Task<List<DepartmentDto>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<List<DepartmentResponseDto>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        Task<DepartmentDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<DepartmentResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<DepartmentDto> CreateAsync(CreateDepartmentDto createDepartmentDto, CancellationToken cancellationToken = default);
+        Task<DepartmentResponseDto> CreateAsync(DepartmentCreateDto createDepartmentDto, CancellationToken cancellationToken = default);
 
-        Task<DepartmentDto?> RenameAsync(Guid id, EditDepartmentDto editDepartmentDto, CancellationToken cancellationToken = default);
+        Task<DepartmentResponseDto?> RenameAsync(Guid id, DepartmentEditDto editDepartmentDto, CancellationToken cancellationToken = default);
 
         Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
