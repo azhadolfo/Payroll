@@ -5,12 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Payroll.API.Data;
+using Payroll.API.Features.Accounts;
+using Payroll.API.Features.Departments;
+using Payroll.API.Features.Employees;
+using Payroll.API.Features.Employees.Validators;
 using Payroll.API.Interfaces;
 using Payroll.API.Middlewares;
 using Payroll.API.Models;
 using Payroll.API.Repository;
 using Payroll.API.Services;
-using Payroll.API.Validators;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
