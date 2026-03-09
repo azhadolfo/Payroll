@@ -33,14 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\Account\" />
-    <Folder Include="Dtos\Department\" />
-    <Folder Include="Dtos\Employee\" />
     <Folder Include="Features\Accounts\Filters\" />
-    <Folder Include="Features\Accounts\Validators\" />
     <Folder Include="Features\Departments\Filters\" />
     <Folder Include="Features\Employees\Filters\" />
-    <Folder Include="Validators\" />
   </ItemGroup>
 
 </Project>

@@ -9,10 +9,8 @@ using Payroll.API.Features.Accounts;
 using Payroll.API.Features.Departments;
 using Payroll.API.Features.Employees;
 using Payroll.API.Features.Employees.Validators;
-using Payroll.API.Interfaces;
 using Payroll.API.Middlewares;
 using Payroll.API.Models;
-using Payroll.API.Repository;
 using Payroll.API.Services;
 using Scalar.AspNetCore;
 
@@ -79,7 +77,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;
+    options.Password.RequireDigit = false;
     options.Password.RequireLowercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequireUppercase = true;
@@ -110,13 +108,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<IStockRepository, StockRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ValidationService>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeValidator>();
 
