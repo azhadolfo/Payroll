@@ -29,60 +29,33 @@ namespace Payroll.API.Controllers
         {
             var employee = await _employeeService.GetByIdAsync(id, cancellationToken);
 
-            if (employee == null)
-                return NotFound();
-
             return Ok(employee);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] EmployeeCreateDto createEmployeeDto, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var employee = await _employeeService.CreateAsync(createEmployeeDto, cancellationToken);
-                return CreatedAtAction(nameof(GetById), new { id = employee.Id }, employee);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            var employee = await _employeeService.CreateAsync(createEmployeeDto, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = employee.Id }, employee);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] EmployeeEditDto editEmployeeDto, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var employee = await _employeeService.UpdateAsync(id, editEmployeeDto, cancellationToken);
+            var employee = await _employeeService.UpdateAsync(id, editEmployeeDto, cancellationToken);
 
-                if (employee == null)
-                    return NotFound();
-
-                return Ok(employee);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return Ok(employee);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var success = await _employeeService.DeleteAsync(id, cancellationToken);
+            var success = await _employeeService.DeleteAsync(id, cancellationToken);
 
-                if (!success)
-                    return NotFound();
+            if (!success)
+                return NotFound();
 
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return NoContent();
         }
     }
 }

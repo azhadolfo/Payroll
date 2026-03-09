@@ -7,14 +7,19 @@ namespace Payroll.API.Services
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly ValidationService _validatorService;
 
-        public DepartmentService(IDepartmentRepository departmentRepository, CancellationToken cancellationToken = default)
+        public DepartmentService(IDepartmentRepository departmentRepository,
+            ValidationService validationService)
         {
             _departmentRepository = departmentRepository;
+            _validatorService = validationService;
         }
 
         public async Task<DepartmentResponseDto> CreateAsync(DepartmentCreateDto createDepartmentDto, CancellationToken cancellationToken = default)
         {
+            await _validatorService.ValidateAsync(createDepartmentDto);
+
             var department = createDepartmentDto.ToDepartmentFromCreateDTO();
             await _departmentRepository.AddAsync(department, cancellationToken);
             await _departmentRepository.SaveAsync(cancellationToken);
@@ -23,9 +28,8 @@ namespace Payroll.API.Services
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var department = await _departmentRepository.GetByIdAsync(id);
-
-            if (department == null) return false;
+            var department = await _departmentRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new KeyNotFoundException("Department not found");
 
             _departmentRepository.Delete(department);
             await _departmentRepository.SaveAsync(cancellationToken);
@@ -40,15 +44,16 @@ namespace Payroll.API.Services
 
         public async Task<DepartmentResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
-            if (department == null) return null;
+            var department = await _departmentRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new KeyNotFoundException("Department not found");
+
             return department.ToDto();
         }
 
         public async Task<DepartmentResponseDto?> RenameAsync(Guid id, DepartmentEditDto editDepartmentDto, CancellationToken cancellationToken = default)
         {
-            var department = await _departmentRepository.GetByIdAsync(id, cancellationToken);
-            if (department == null) return null;
+            var department = await _departmentRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new KeyNotFoundException("Department not found");
 
             department.Rename(editDepartmentDto.Name);
             _departmentRepository.Update(department);

@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -5,9 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Payroll.API.Data;
 using Payroll.API.Interfaces;
+using Payroll.API.Middlewares;
 using Payroll.API.Models;
 using Payroll.API.Repository;
 using Payroll.API.Services;
+using Payroll.API.Validators;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -111,6 +114,8 @@ builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<ValidationService>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeValidator>();
 
 var app = builder.Build();
 
@@ -129,5 +134,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 app.Run();

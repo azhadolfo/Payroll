@@ -29,57 +29,32 @@ namespace Payroll.API.Controllers
         {
             var department = await _departmentService.GetByIdAsync(id, cancellationToken);
 
-            if (department == null)
-                return NotFound();
-
             return Ok(department);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] DepartmentCreateDto createDepartmentDto, CancellationToken cancellationToken)
         {
-            try
-            {
-                var department = await _departmentService.CreateAsync(createDepartmentDto, cancellationToken);
-                return CreatedAtAction(nameof(GetById), new { id = department.Id }, department);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            var department = await _departmentService.CreateAsync(createDepartmentDto, cancellationToken);
+            return CreatedAtAction(nameof(GetById), new { id = department.Id }, department);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Rename(Guid id, [FromBody] DepartmentEditDto editDepartmentDto, CancellationToken cancellationToken)
         {
-            try
-            {
-                var department = await _departmentService.RenameAsync(id, editDepartmentDto, cancellationToken);
-                if (department == null) return NotFound();
-                return Ok(department);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            var department = await _departmentService.RenameAsync(id, editDepartmentDto, cancellationToken);
+            return Ok(department);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var success = await _departmentService.DeleteAsync(id, cancellationToken);
+            var success = await _departmentService.DeleteAsync(id, cancellationToken);
 
-                if (!success)
-                    return NotFound();
+            if (!success)
+                return NotFound();
 
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
+            return NoContent();
         }
     }
 }

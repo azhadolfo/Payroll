@@ -8,15 +8,21 @@ namespace Payroll.API.Services
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly ValidationService _validationService;
 
-        public EmployeeService(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository)
+        public EmployeeService(IEmployeeRepository employeeRepository,
+            IDepartmentRepository departmentRepository,
+            ValidationService validationService)
         {
             _employeeRepository = employeeRepository;
             _departmentRepository = departmentRepository;
+            _validationService = validationService;
         }
 
         public async Task<EmployeeResponseDto> CreateAsync(EmployeeCreateDto createEmployeeDto, CancellationToken cancellationToken = default)
         {
+            await _validationService.ValidateAsync(createEmployeeDto);
+
             if (!await _departmentRepository.IsDepartmentExist(createEmployeeDto.DepartmentId, cancellationToken))
             {
                 throw new InvalidOperationException($"Department with an id {createEmployeeDto.DepartmentId} does not exist.");
@@ -30,10 +36,8 @@ namespace Payroll.API.Services
 
         public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
-
-            if (employee == null)
-                return false;
+            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new KeyNotFoundException("Employee not found");
 
             _employeeRepository.Delete(employee);
             await _employeeRepository.SaveAsync(cancellationToken);
@@ -48,17 +52,16 @@ namespace Payroll.API.Services
 
         public async Task<EmployeeResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
-            if (employee == null) return null;
+            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new KeyNotFoundException("Employee not found");
+
             return employee.ToDto();
         }
 
         public async Task<EmployeeResponseDto?> UpdateAsync(Guid id, EmployeeEditDto editEmployeeDto, CancellationToken cancellationToken = default)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
-
-            if (employee == null)
-                return null;
+            var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new KeyNotFoundException("Employee not found");
 
             employee.EmployeeNumber = editEmployeeDto.EmployeeNumber;
             employee.FirstName = editEmployeeDto.FirstName;
