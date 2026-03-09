@@ -8,7 +8,8 @@ namespace Payroll.API.Features.Departments.Validators
         public CreateDepartmentValidator()
         {
             RuleFor(x => x.Name)
-                .NotEmpty();
+                .NotEmpty()
+                .MaximumLength(100);
         }
     }
 }

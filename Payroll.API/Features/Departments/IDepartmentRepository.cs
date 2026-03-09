@@ -17,5 +17,7 @@ namespace Payroll.API.Features.Departments
         Task SaveAsync(CancellationToken cancellationToken = default);
 
         Task<bool> IsDepartmentExist(Guid departmentId, CancellationToken cancellationToken = default);
+
+        IQueryable<Department> GetAllQuery();
     }
 }

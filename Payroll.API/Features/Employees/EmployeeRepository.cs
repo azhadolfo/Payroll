@@ -30,6 +30,11 @@ namespace Payroll.API.Features.Employees
                 .ToListAsync(cancellationToken);
         }
 
+        public IQueryable<Employee> GetAllQuery()
+        {
+            return _dbContext.Employees.AsNoTracking();
+        }
+
         public async Task<Employee?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Employees

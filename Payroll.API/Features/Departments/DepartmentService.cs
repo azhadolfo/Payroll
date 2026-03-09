@@ -1,4 +1,7 @@
-﻿using Payroll.API.Features.Departments.Dtos;
+﻿using Microsoft.EntityFrameworkCore;
+using Payroll.API.Common;
+using Payroll.API.Features.Departments.Dtos;
+using Payroll.API.Features.Departments.Filters;
 using Payroll.API.Services;
 
 namespace Payroll.API.Features.Departments
@@ -35,10 +38,29 @@ namespace Payroll.API.Features.Departments
             return true;
         }
 
-        public async Task<List<DepartmentResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<PagedResult<DepartmentResponseDto>> GetAllAsync(DepartmentFilter filter, CancellationToken cancellationToken = default)
         {
-            var departments = await _departmentRepository.GetAllAsync(cancellationToken);
-            return departments.Select(x => x.ToDto()).ToList();
+            var query = _departmentRepository.GetAllQuery();
+
+            if (!string.IsNullOrEmpty(filter.Name))
+            {
+                query = query.Where(d => d.Name.ToLower().Contains(filter.Name));
+            }
+
+            var totalRecords = await query.CountAsync(cancellationToken);
+
+            var departments = await query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<DepartmentResponseDto>
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                TotalRecords = totalRecords,
+                Data = departments.Select(d => d.ToDto())
+            };
         }
 
         public async Task<DepartmentResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

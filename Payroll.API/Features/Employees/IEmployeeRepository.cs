@@ -15,5 +15,7 @@ namespace Payroll.API.Features.Employees
         void Delete(Employee department);
 
         Task SaveAsync(CancellationToken cancellationToken = default);
+
+        IQueryable<Employee> GetAllQuery();
     }
 }

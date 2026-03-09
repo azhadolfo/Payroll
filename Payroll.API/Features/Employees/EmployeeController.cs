@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Payroll.API.Features.Employees.Dtos;
+using Payroll.API.Features.Employees.Filters;
 
 namespace Payroll.API.Features.Employees
 {
@@ -17,9 +18,9 @@ namespace Payroll.API.Features.Employees
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAll([FromQuery] EmployeeFilter filter, CancellationToken cancellationToken = default)
         {
-            var employees = await _employeeService.GetAllAsync(cancellationToken);
+            var employees = await _employeeService.GetAllAsync(filter, cancellationToken);
             return Ok(employees);
         }
 

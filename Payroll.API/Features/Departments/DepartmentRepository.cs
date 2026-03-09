@@ -28,6 +28,11 @@ namespace Payroll.API.Features.Departments
             return await _dbContext.Departments.Include(d => d.Employees).ToListAsync(cancellationToken);
         }
 
+        public IQueryable<Department> GetAllQuery()
+        {
+            return _dbContext.Departments.AsNoTracking();
+        }
+
         public async Task<Department?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);

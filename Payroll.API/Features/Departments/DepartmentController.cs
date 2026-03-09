@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Payroll.API.Features.Departments.Dtos;
+using Payroll.API.Features.Departments.Filters;
 
 namespace Payroll.API.Features.Departments
 {
@@ -17,9 +18,9 @@ namespace Payroll.API.Features.Departments
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([FromQuery] DepartmentFilter filter, CancellationToken cancellationToken)
         {
-            var departments = await _departmentService.GetAllAsync(cancellationToken);
+            var departments = await _departmentService.GetAllAsync(filter, cancellationToken);
             return Ok(departments);
         }
 

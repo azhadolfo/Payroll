@@ -34,8 +34,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Accounts\Filters\" />
-    <Folder Include="Features\Departments\Filters\" />
-    <Folder Include="Features\Employees\Filters\" />
   </ItemGroup>
 
 </Project>

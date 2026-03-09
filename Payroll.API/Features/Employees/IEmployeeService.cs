@@ -1,10 +1,12 @@
-﻿using Payroll.API.Features.Employees.Dtos;
+﻿using Payroll.API.Common;
+using Payroll.API.Features.Employees.Dtos;
+using Payroll.API.Features.Employees.Filters;
 
 namespace Payroll.API.Features.Employees
 {
     public interface IEmployeeService
     {
-        Task<List<EmployeeResponseDto>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<PagedResult<EmployeeResponseDto>> GetAllAsync(EmployeeFilter filter, CancellationToken cancellationToken = default);
 
         Task<EmployeeResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 

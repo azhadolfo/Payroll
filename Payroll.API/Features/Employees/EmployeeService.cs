@@ -1,5 +1,8 @@
-﻿using Payroll.API.Features.Departments;
+﻿using Microsoft.EntityFrameworkCore;
+using Payroll.API.Common;
+using Payroll.API.Features.Departments;
 using Payroll.API.Features.Employees.Dtos;
+using Payroll.API.Features.Employees.Filters;
 using Payroll.API.Services;
 
 namespace Payroll.API.Features.Employees
@@ -44,10 +47,39 @@ namespace Payroll.API.Features.Employees
             return true;
         }
 
-        public async Task<List<EmployeeResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<PagedResult<EmployeeResponseDto>> GetAllAsync(EmployeeFilter filter, CancellationToken cancellationToken = default)
         {
-            var employees = await _employeeRepository.GetAllAsync(cancellationToken);
-            return employees.ConvertAll(e => e.ToDto());
+            var query = _employeeRepository.GetAllQuery();
+
+            if (!string.IsNullOrEmpty(filter.FirstName))
+            {
+                query = query.Where(e => e.FirstName.Contains(filter.FirstName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(filter.LastName))
+            {
+                query = query.Where(e => e.LastName.Contains(filter.LastName, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (filter.DepartmentId.HasValue)
+            {
+                query = query.Where(e => e.DepartmentId == filter.DepartmentId);
+            }
+
+            var totalRecords = await query.CountAsync(cancellationToken);
+
+            var employees = await query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<EmployeeResponseDto>
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                TotalRecords = totalRecords,
+                Data = employees.ConvertAll(e => e.ToDto())
+            };
         }
 
         public async Task<EmployeeResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

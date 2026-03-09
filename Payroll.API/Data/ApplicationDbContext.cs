@@ -11,8 +11,6 @@ namespace Payroll.API.Data
         {
         }
 
-        public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Comment> Comments { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
 
