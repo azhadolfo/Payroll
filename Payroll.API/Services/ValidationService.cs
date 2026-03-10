@@ -2,7 +2,12 @@
 
 namespace Payroll.API.Services
 {
-    public class ValidationService
+    public interface IValidationService
+    {
+        Task ValidateAsync<T>(T model);
+    }
+
+    public class ValidationService : IValidationService
     {
         private readonly IServiceProvider _serviceProvider;
 

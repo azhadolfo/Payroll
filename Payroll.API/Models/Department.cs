@@ -25,7 +25,16 @@
             if (string.IsNullOrWhiteSpace(newName))
                 throw new ArgumentException("Invalid name");
 
-            Name = newName;
+            Name = newName.Trim().ToUpper();
+        }
+
+        public Department Clone()
+        {
+            return new Department
+            {
+                Id = this.Id,
+                Name = this.Name
+            };
         }
     }
 }

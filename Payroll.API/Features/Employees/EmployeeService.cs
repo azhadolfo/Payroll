@@ -11,12 +11,12 @@ namespace Payroll.API.Features.Employees
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IDepartmentRepository _departmentRepository;
-        private readonly ValidationService _validationService;
+        private readonly IValidationService _validationService;
         private readonly ILogger<EmployeeService> _logger;
 
         public EmployeeService(IEmployeeRepository employeeRepository,
             IDepartmentRepository departmentRepository,
-            ValidationService validationService,
+            IValidationService validationService,
             ILogger<EmployeeService> logger)
         {
             _employeeRepository = employeeRepository;

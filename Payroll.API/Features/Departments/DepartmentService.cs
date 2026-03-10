@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Payroll.API.Common;
+using Payroll.API.Features.AuditLogs;
 using Payroll.API.Features.Departments.Dtos;
 using Payroll.API.Features.Departments.Filters;
+using Payroll.API.Models;
 using Payroll.API.Services;
 
 namespace Payroll.API.Features.Departments
@@ -9,27 +12,44 @@ namespace Payroll.API.Features.Departments
     public class DepartmentService : IDepartmentService
     {
         private readonly IDepartmentRepository _departmentRepository;
-        private readonly ValidationService _validatorService;
+        private readonly IValidationService _validatorService;
         private readonly ILogger<DepartmentService> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAuditService _auditService;
+        private readonly IUserContextService _userContextService;
 
         public DepartmentService(IDepartmentRepository departmentRepository,
-            ValidationService validationService,
-            ILogger<DepartmentService> logger)
+            IValidationService validationService,
+            ILogger<DepartmentService> logger,
+            UserManager<ApplicationUser> userManager,
+            IAuditService auditService,
+            IUserContextService userContextService)
         {
             _departmentRepository = departmentRepository;
             _validatorService = validationService;
             _logger = logger;
+            _userManager = userManager;
+            _auditService = auditService;
+            _userContextService = userContextService;
         }
 
         public async Task<DepartmentResponseDto> CreateAsync(DepartmentCreateDto createDepartmentDto, CancellationToken cancellationToken = default)
         {
             await _validatorService.ValidateAsync(createDepartmentDto);
 
-            _logger.LogInformation("Creating department {DepartmentName}", createDepartmentDto.Name);
-
             var department = createDepartmentDto.ToDepartmentFromCreateDTO();
             await _departmentRepository.AddAsync(department, cancellationToken);
             await _departmentRepository.SaveAsync(cancellationToken);
+
+            // Audit log
+            await _auditService.LogAsync(
+                department,
+                department.Id.ToString(),
+                _userContextService.GetUsername(),
+                AuditOperation.Create,
+                cancellationToken);
+
+            _logger.LogInformation("Created department {DepartmentName}", createDepartmentDto.Name);
 
             return department.ToDto();
         }
@@ -39,10 +59,18 @@ namespace Payroll.API.Features.Departments
             var department = await _departmentRepository.GetByIdAsync(id, cancellationToken)
                 ?? throw new KeyNotFoundException("Department not found");
 
-            _logger.LogInformation("Deleting department {DepartmentId}", id);
-
             _departmentRepository.Delete(department);
             await _departmentRepository.SaveAsync(cancellationToken);
+
+            // Audit log
+            await _auditService.LogAsync(
+                department,
+                id.ToString(),
+                _userContextService.GetUsername(),
+                AuditOperation.Delete,
+                cancellationToken);
+
+            _logger.LogInformation("Deleted department {DepartmentId}", id);
             return true;
         }
 
@@ -85,11 +113,21 @@ namespace Payroll.API.Features.Departments
             var department = await _departmentRepository.GetByIdAsync(id, cancellationToken)
                 ?? throw new KeyNotFoundException("Department not found");
 
-            _logger.LogInformation("Renaming department {DepartmentId}", id);
+            var oldDepartment = department.Clone();
 
             department.Rename(editDepartmentDto.Name);
             _departmentRepository.Update(department);
             await _departmentRepository.SaveAsync(cancellationToken);
+
+            // Audit log for update
+            await _auditService.LogChangesAsync(
+                oldDepartment,
+                department,
+                id.ToString(),
+                _userContextService.GetUsername(),
+                cancellationToken);
+
+            _logger.LogInformation("Renamed department {DepartmentId}", id);
             return department.ToDto();
         }
     }

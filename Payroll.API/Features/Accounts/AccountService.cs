@@ -11,14 +11,14 @@ namespace Payroll.API.Features.Accounts
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ITokenService _tokenService;
-        private readonly ValidationService _validationService;
+        private readonly IValidationService _validationService;
         private readonly ILogger<AccountService> _logger;
 
         public AccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ITokenService tokenService,
-            ValidationService validationService,
+            IValidationService validationService,
             ILogger<AccountService> logger)
         {
             _userManager = userManager;
