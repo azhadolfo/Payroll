@@ -32,7 +32,7 @@ namespace Payroll.API.Features.Employees
 
         public IQueryable<Employee> GetAllQuery()
         {
-            return _dbContext.Employees.AsNoTracking();
+            return _dbContext.Employees.Include(e => e.Department).AsNoTracking();
         }
 
         public async Task<Employee?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
