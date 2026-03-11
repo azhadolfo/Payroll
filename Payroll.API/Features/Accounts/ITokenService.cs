@@ -4,6 +4,6 @@ namespace Payroll.API.Features.Accounts
 {
     public interface ITokenService
     {
-        string CreateToken(ApplicationUser user);
+        Task<string> CreateToken(ApplicationUser user);
     }
 }

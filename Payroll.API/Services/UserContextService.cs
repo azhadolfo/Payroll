@@ -1,4 +1,6 @@
-﻿namespace Payroll.API.Services
+﻿using System.Security.Claims;
+
+namespace Payroll.API.Services
 {
     public interface IUserContextService
     {
@@ -16,7 +18,9 @@
 
         public string GetUsername()
         {
-            return _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? string.Empty;
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            return user?.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
         }
     }
 }
