@@ -30,12 +30,17 @@ namespace Payroll.API.Features.Departments
 
         public IQueryable<Department> GetAllQuery()
         {
-            return _dbContext.Departments.Include(d => d.Employees).AsNoTracking();
+            return _dbContext.Departments
+                //.IgnoreQueryFilters() //Uncomment this if need to show the soft deleted records
+                .Include(d => d.Employees)
+                .AsNoTracking();
         }
 
         public async Task<Department?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            return await _dbContext.Departments
+                .Include(d => d.Employees)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
         public async Task<bool> IsDepartmentExist(Guid departmentId, CancellationToken cancellationToken = default)

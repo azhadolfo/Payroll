@@ -48,6 +48,7 @@ namespace Payroll.API.Data
             builder.Entity<IdentityRole>().HasData(roles);
 
             builder.Entity<Department>()
+                .HasQueryFilter(d => !d.IsDeleted)
                 .HasIndex(d => d.Name)
                 .IsUnique();
 
@@ -65,17 +66,43 @@ namespace Payroll.API.Data
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var auditEntries = new List<AuditTrail>();
+            var userId = _currentUser.UserId;
+            var username = _currentUser.Username;
 
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is AuditTrail || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                     continue;
 
+                if (entry.Entity is BaseEntity baseEntity)
+                {
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            baseEntity.CreatedAt = DateTime.UtcNow;
+                            baseEntity.CreatedBy = userId;
+                            break;
+
+                        case EntityState.Modified:
+                            baseEntity.UpdatedAt = DateTime.UtcNow;
+                            baseEntity.UpdatedBy = userId;
+                            break;
+
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+
+                            baseEntity.IsDeleted = true;
+                            baseEntity.DeletedAt = DateTime.UtcNow;
+                            baseEntity.DeletedBy = userId;
+                            break;
+                    }
+                }
+
                 var audit = new AuditTrail
                 {
                     TableName = entry.Entity.GetType().Name,
-                    UserId = _currentUser.UserId,
-                    Username = _currentUser.Username,
+                    UserId = userId,
+                    Username = username,
                     Timestamp = DateTime.UtcNow
                 };
 

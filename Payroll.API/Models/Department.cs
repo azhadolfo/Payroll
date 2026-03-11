@@ -1,6 +1,6 @@
 ﻿namespace Payroll.API.Models
 {
-    public class Department
+    public class Department : BaseEntity
     {
         public Guid Id { get; set; }
 
