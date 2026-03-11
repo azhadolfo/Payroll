@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Payroll.API.Data;
 using Payroll.API.Features.Accounts;
-using Payroll.API.Features.AuditLogs;
 using Payroll.API.Features.Departments;
 using Payroll.API.Features.Employees;
 using Payroll.API.Features.Employees.Validators;
@@ -121,18 +120,18 @@ builder.Host.UseSerilog((context, services, configuration) =>
 //Repository
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IAuditRepository, AuditRepository>();
 
 //Feature Service
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IAuditService, AuditService>();
 
 //Common Services
 builder.Services.AddScoped<IValidationService, ValidationService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 //Validator
 builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeValidator>();

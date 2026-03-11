@@ -1,6 +1,6 @@
 ﻿namespace Payroll.API.Common
 {
-    public enum AuditOperation
+    public enum AuditActionType
     {
         Create,
         Update,

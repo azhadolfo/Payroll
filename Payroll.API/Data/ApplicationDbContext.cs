@@ -1,19 +1,27 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Payroll.API.Common;
 using Payroll.API.Models;
+using Payroll.API.Services;
+using System.Text.Json;
 
 namespace Payroll.API.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        private readonly ICurrentUserService _currentUser;
+
+        public ApplicationDbContext(
+            DbContextOptions<ApplicationDbContext> options,
+            ICurrentUserService currentUser) : base(options)
         {
+            _currentUser = currentUser;
         }
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<AuditTrail> AuditTrails => Set<AuditTrail>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -52,6 +60,51 @@ namespace Payroll.API.Data
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DepartmentId)
                 .OnDelete(DeleteBehavior.Cascade);
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var auditEntries = new List<AuditTrail>();
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is AuditTrail || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                    continue;
+
+                var audit = new AuditTrail
+                {
+                    TableName = entry.Entity.GetType().Name,
+                    UserId = _currentUser.UserId,
+                    Username = _currentUser.Username,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                if (entry.State == EntityState.Added)
+                {
+                    audit.ActionType = AuditActionType.Create.ToString();
+                    audit.NewValues = JsonSerializer.Serialize(entry.CurrentValues.ToObject());
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    audit.ActionType = AuditActionType.Update.ToString();
+                    audit.OldValues = JsonSerializer.Serialize(entry.OriginalValues.ToObject());
+                    audit.NewValues = JsonSerializer.Serialize(entry.CurrentValues.ToObject());
+                }
+
+                if (entry.State == EntityState.Deleted)
+                {
+                    audit.ActionType = AuditActionType.Delete.ToString();
+                    audit.OldValues = JsonSerializer.Serialize(entry.OriginalValues.ToObject());
+                }
+
+                auditEntries.Add(audit);
+            }
+
+            if (auditEntries.Count > 0)
+                await AuditTrails.AddRangeAsync(auditEntries, cancellationToken);
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
