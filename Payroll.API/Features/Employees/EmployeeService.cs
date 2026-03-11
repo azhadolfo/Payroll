@@ -62,12 +62,12 @@ namespace Payroll.API.Features.Employees
 
             if (!string.IsNullOrEmpty(filter.FirstName))
             {
-                query = query.Where(e => e.FirstName.Contains(filter.FirstName, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(e => e.FirstName.ToLower().Contains(filter.FirstName));
             }
 
             if (!string.IsNullOrEmpty(filter.LastName))
             {
-                query = query.Where(e => e.LastName.Contains(filter.LastName, StringComparison.OrdinalIgnoreCase));
+                query = query.Where(e => e.LastName.ToLower().Contains(filter.LastName));
             }
 
             if (filter.DepartmentId.HasValue)
