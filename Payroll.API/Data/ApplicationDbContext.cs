@@ -80,12 +80,12 @@ namespace Payroll.API.Data
                     {
                         case EntityState.Added:
                             baseEntity.CreatedAt = DateTime.UtcNow;
-                            baseEntity.CreatedBy = userId;
+                            baseEntity.CreatedBy = username;
                             break;
 
                         case EntityState.Modified:
                             baseEntity.UpdatedAt = DateTime.UtcNow;
-                            baseEntity.UpdatedBy = userId;
+                            baseEntity.UpdatedBy = username;
                             break;
 
                         case EntityState.Deleted:
@@ -93,7 +93,7 @@ namespace Payroll.API.Data
 
                             baseEntity.IsDeleted = true;
                             baseEntity.DeletedAt = DateTime.UtcNow;
-                            baseEntity.DeletedBy = userId;
+                            baseEntity.DeletedBy = username;
                             break;
                     }
                 }
