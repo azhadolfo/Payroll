@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Payroll.API.Features.Accounts.Dtos;
 
-namespace Payroll.API.Features.Accounts
+namespace Payroll.API.Features.Accounts.v2
 {
-    [Route("api/account")]
     [ApiController]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/account")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

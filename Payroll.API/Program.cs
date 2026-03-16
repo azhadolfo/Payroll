@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -19,8 +20,17 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+})
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 // Configure OpenAPI with JWT Authentication
 builder.Services.AddOpenApi(options =>
@@ -30,10 +40,9 @@ builder.Services.AddOpenApi(options =>
         document.Info = new()
         {
             Title = "Payroll API",
-            Version = "v1"
+            Version = context.DocumentName
         };
 
-        // Add security scheme
         document.Components ??= new();
         document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
 
@@ -149,7 +158,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi("/openapi/{documentName}.json");
     app.MapScalarApiReference(options =>
     {
         options.Title = "Payroll API";
