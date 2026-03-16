@@ -3,9 +3,9 @@ using Payroll.API.Features.Departments.Dtos;
 
 namespace Payroll.API.Features.Departments.Validators
 {
-    public class CreateDepartmentValidator : AbstractValidator<DepartmentCreateDto>
+    public class DepartmentCreateValidator : AbstractValidator<DepartmentCreateDto>
     {
-        public CreateDepartmentValidator()
+        public DepartmentCreateValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty()

@@ -1,4 +1,4 @@
-﻿using Payroll.API.Common;
+﻿using Payroll.API.Common.Pagination;
 using Payroll.API.Features.Departments.Dtos;
 using Payroll.API.Features.Departments.Filters;
 

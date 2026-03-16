@@ -24,6 +24,7 @@ namespace Payroll.API.Features.Employees
             return Ok(employees);
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken = default)
         {

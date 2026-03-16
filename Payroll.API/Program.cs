@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Payroll.API.Common.Authorization;
 using Payroll.API.Data;
 using Payroll.API.Features.Accounts;
 using Payroll.API.Features.Departments;
 using Payroll.API.Features.Employees;
 using Payroll.API.Features.Employees.Validators;
+using Payroll.API.Features.Roles;
 using Payroll.API.Middlewares;
 using Payroll.API.Models;
 using Payroll.API.Services;
@@ -109,6 +111,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddApiAuthorization();
+
 builder.Host.UseSerilog((context, services, configuration) =>
 {
     configuration
@@ -126,6 +130,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 //Common Services
 builder.Services.AddScoped<IValidationService, ValidationService>();
@@ -134,7 +139,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 //Validator
-builder.Services.AddValidatorsFromAssemblyContaining<CreateEmployeeValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EmployeeCreateValidator>();
 
 var app = builder.Build();
 
@@ -150,10 +155,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
+
 app.Run();

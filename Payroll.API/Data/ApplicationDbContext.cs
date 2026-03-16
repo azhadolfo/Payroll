@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Payroll.API.Common;
+using Payroll.API.Common.Audit;
 using Payroll.API.Models;
 using Payroll.API.Services;
 using System.Text.Json;
@@ -57,6 +57,7 @@ namespace Payroll.API.Data
             .IsUnique();
 
             builder.Entity<Employee>()
+                .HasQueryFilter(d => !d.IsDeleted)
                 .HasOne(e => e.Department)
                 .WithMany(d => d.Employees)
                 .HasForeignKey(e => e.DepartmentId)

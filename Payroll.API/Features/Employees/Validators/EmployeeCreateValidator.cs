@@ -3,9 +3,9 @@ using Payroll.API.Features.Employees.Dtos;
 
 namespace Payroll.API.Features.Employees.Validators
 {
-    public class CreateEmployeeValidator : AbstractValidator<EmployeeCreateDto>
+    public class EmployeeCreateValidator : AbstractValidator<EmployeeCreateDto>
     {
-        public CreateEmployeeValidator()
+        public EmployeeCreateValidator()
         {
             RuleFor(x => x.FirstName)
                 .NotEmpty()

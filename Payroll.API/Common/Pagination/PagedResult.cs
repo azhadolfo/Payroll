@@ -1,4 +1,4 @@
-﻿namespace Payroll.API.Common
+﻿namespace Payroll.API.Common.Pagination
 {
     public class PagedResult<T>
     {

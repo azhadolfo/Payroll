@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Payroll.API.Common;
+using Payroll.API.Common.Pagination;
 using Payroll.API.Features.Departments.Dtos;
 using Payroll.API.Features.Departments.Filters;
 using Payroll.API.Models;
