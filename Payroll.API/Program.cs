@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Payroll.API.Common;
 using Payroll.API.Common.Authorization;
 using Payroll.API.Data;
 using Payroll.API.Features.Accounts;
@@ -11,7 +12,6 @@ using Payroll.API.Features.Departments;
 using Payroll.API.Features.Employees;
 using Payroll.API.Features.Employees.Validators;
 using Payroll.API.Features.Roles;
-using Payroll.API.Middlewares;
 using Payroll.API.Models;
 using Payroll.API.Services;
 using Scalar.AspNetCore;
@@ -121,6 +121,9 @@ builder.Host.UseSerilog((context, services, configuration) =>
         .Enrich.FromLogContext();
 });
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 //Repository
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
@@ -155,7 +158,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
+app.UseExceptionHandler();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthentication();

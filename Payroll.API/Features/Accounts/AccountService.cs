@@ -32,8 +32,6 @@ namespace Payroll.API.Features.Accounts
         {
             await _validationService.ValidateAsync(registerDto);
 
-            _logger.LogInformation("Creating user {Username} with an email of {Email}", registerDto.Username, registerDto.Email);
-
             var appUser = new ApplicationUser
             {
                 UserName = registerDto.Username,
@@ -57,6 +55,8 @@ namespace Payroll.API.Features.Accounts
                     string.Join(", ", roleResult.Errors.Select(e => e.Description))
                 );
             }
+
+            _logger.LogInformation("Created user {Username} with an email of {Email}", appUser.UserName, appUser.Email);
 
             return new NewUserDto
             {
