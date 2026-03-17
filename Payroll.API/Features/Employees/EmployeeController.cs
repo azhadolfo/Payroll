@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Payroll.API.Features.Employees.Dtos;
 using Payroll.API.Features.Employees.Filters;
 
@@ -7,7 +8,7 @@ namespace Payroll.API.Features.Employees
 {
     [ApiController]
     [Route("api/employees")]
-    [Authorize]
+    [EnableRateLimiting("api")]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;

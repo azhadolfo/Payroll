@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Payroll.API.Features.Departments.Dtos;
 using Payroll.API.Features.Departments.Filters;
 
@@ -7,7 +7,7 @@ namespace Payroll.API.Features.Departments
 {
     [ApiController]
     [Route("api/departments")]
-    [Authorize]
+    [EnableRateLimiting("api")]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;

@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Payroll.API.Features.Accounts.Dtos;
 
 namespace Payroll.API.Features.Accounts.v1
@@ -8,6 +9,7 @@ namespace Payroll.API.Features.Accounts.v1
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/accounts")]
+    [EnableRateLimiting("auth")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

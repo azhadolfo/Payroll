@@ -2,6 +2,7 @@ using Asp.Versioning;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -130,6 +131,31 @@ builder.Host.UseSerilog((context, services, configuration) =>
         .Enrich.FromLogContext();
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("auth", config =>
+    {
+        config.PermitLimit = 5;
+        config.Window = TimeSpan.FromMinutes(1);
+        config.QueueLimit = 0;
+    });
+
+    options.AddSlidingWindowLimiter("api", config =>
+    {
+        config.PermitLimit = 100;
+        config.Window = TimeSpan.FromMinutes(1);
+        config.SegmentsPerWindow = 6;
+    });
+
+    options.AddFixedWindowLimiter("reports", config =>
+    {
+        config.PermitLimit = 10;
+        config.Window = TimeSpan.FromMinutes(1);
+    });
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
@@ -168,11 +194,17 @@ if (app.Environment.IsDevelopment())
     }).AllowAnonymous();
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
 app.UseExceptionHandler();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 app.MapControllers();
 
 app.Run();
