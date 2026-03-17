@@ -158,13 +158,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi("/openapi/{documentName}.json");
+    app.MapOpenApi("/openapi/{documentName}.json").AllowAnonymous();
+
     app.MapScalarApiReference(options =>
     {
         options.Title = "Payroll API";
         options.DarkMode = true;
         options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
-    });
+    }).AllowAnonymous();
 }
 
 app.UseExceptionHandler();

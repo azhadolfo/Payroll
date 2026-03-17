@@ -1,4 +1,6 @@
-﻿namespace Payroll.API.Common.Authorization
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace Payroll.API.Common.Authorization
 {
     public static class AuthorizationExtensions
     {
@@ -6,6 +8,10 @@
         {
             services.AddAuthorization(options =>
             {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
                 options.AddPolicy("AdminOnly", policy =>
                     policy.RequireRole("Admin"));
 

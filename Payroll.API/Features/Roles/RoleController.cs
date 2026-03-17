@@ -5,7 +5,7 @@ using Payroll.API.Features.Roles.Dtos;
 namespace Payroll.API.Features.Roles
 {
     [ApiController]
-    [Route("api/role")]
+    [Route("api/roles")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;

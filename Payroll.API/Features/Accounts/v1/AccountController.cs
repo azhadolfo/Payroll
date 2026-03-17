@@ -7,7 +7,7 @@ namespace Payroll.API.Features.Accounts.v1
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/account")]
+    [Route("api/v{version:apiVersion}/accounts")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;

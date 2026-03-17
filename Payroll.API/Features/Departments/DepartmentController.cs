@@ -6,7 +6,7 @@ using Payroll.API.Features.Departments.Filters;
 namespace Payroll.API.Features.Departments
 {
     [ApiController]
-    [Route("api/department")]
+    [Route("api/departments")]
     [Authorize]
     public class DepartmentController : Controller
     {
