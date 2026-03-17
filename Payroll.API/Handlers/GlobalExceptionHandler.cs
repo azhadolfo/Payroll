@@ -16,7 +16,8 @@ namespace Payroll.API.Common
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Server Error",
-                Detail = exception.Message
+                Detail = exception.Message,
+                Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
             };
 
             httpContext.Response.StatusCode = problemDetails.Status.Value;
