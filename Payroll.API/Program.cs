@@ -190,7 +190,10 @@ if (app.Environment.IsDevelopment())
     {
         options.Title = "Payroll API";
         options.DarkMode = true;
-        options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+        options.WithTheme(ScalarTheme.DeepSpace);
+        options.DefaultHttpClient = new(
+            ScalarTarget.CSharp,
+            ScalarClient.HttpClient);
     }).AllowAnonymous();
 }
 
