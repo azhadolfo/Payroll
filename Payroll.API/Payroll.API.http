@@ -1,6 +1,18 @@
-@StockApi.Api_HostAddress = http://localhost:5295
+@baseUrl = http://localhost:5295
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI5YmEyMWQyYy03NzBmLTRmMzQtYTRmZi01NWM5ZjY5ZGJhYjUiLCJ1bmlxdWVfbmFtZSI6ImF6aCIsImVtYWlsIjoidGVzdEBnbWFpbC5jb20iLCJyb2xlIjoiVXNlciIsIm5iZiI6MTc3Mzg3NzM5NCwiZXhwIjoxNzc0NDgyMTk0LCJpYXQiOjE3NzM4NzczOTQsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTI5NS8iLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUyOTUvIn0.NyzKOiT7yY1FZwXkKMX0J4jDBx1qKqu19TLpwYfD9mNX87LtE7Vc20E6AppIEQYOXbPSNOYEmmiW6oKIaVByZg
 
-GET {{StockApi.Api_HostAddress}}/weatherforecast/
+GET {{baseUrl}}/api/roles
+Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
+
+POST {{baseUrl}}/api/v1/accounts/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userName": "azh",
+  "password": "Testing.123456"
+}
+
